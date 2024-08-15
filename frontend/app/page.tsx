@@ -1,3 +1,4 @@
+"use client";
 import { CalculadoraBotoes } from "@/types/enum";
 import { Button } from "@mui/material";
 import { useState } from "react";
@@ -86,7 +87,7 @@ export default function Home() {
       style={{backgroundColor:color}} 
       className=" m-2" 
       variant="contained"
-      onClick={() => setDisplayValue(label)}
+      onClick={() => setDisplayValue(prev => prev + label)}
       >
         {label}
       </Button>
