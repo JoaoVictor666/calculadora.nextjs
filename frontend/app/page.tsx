@@ -1,18 +1,55 @@
 "use client";
 import { CalculadoraBotoes } from "@/types/enum";
 import { Button } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 export default function Home() {
-  const [displayValue, setDisplayValue] = useState(""); // Estado para armazenar o valor
-  
+  const [displayValue, setDisplayValue] = useState("");
+  const [equacao, setEquacao] = useState(""); 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (typeof window !== "undefined" && equacao !== "") {
+        try {
+          const res = await fetch(`http://127.0.0.1:8000/matematica/${equacao}`);
+          const data = await res.json();
+          setDisplayValue(data.resultado); // Atualiza o display com o resultado
+        } catch (error) {
+          console.error("Erro ao buscar dados:", error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [equacao]);
+
+
   const listaDeFileira = [];
   let interador = 0;
   // Função para retornar o próprio botão com o texto correto
+  
   const renderButton = (botao: number) => {
     let label = "";
     let color = "#424242"
+    const handleClick = () => {
+      switch (botao) {
+        case CalculadoraBotoes.igual:
+          // Processa a equação e formata o resultado
+          try {
+            const resultado = eval(displayValue); // Supondo que você use `eval` para cálculos
+            setDisplayValue(parseFloat(resultado.toString()).toString()); // Converte o resultado para número e depois para string
+          } catch (error) {
+            console.error("Erro ao calcular:", error);
+          }
+          return;
+        case CalculadoraBotoes.limpar:
+          setDisplayValue(""); // Limpa o display quando "C" é clicado
+          return;
+        default:
+          setDisplayValue((prev) => prev + label);
+      }
+    };
+  
     switch (botao) {
       case CalculadoraBotoes.igual:
         label = "=";
@@ -66,6 +103,7 @@ export default function Home() {
       case CalculadoraBotoes.limpar:
         label = "C";
         color = "#D30000"
+        
         break;
       case CalculadoraBotoes.parentese_abrir:
         label = "(";
@@ -83,16 +121,18 @@ export default function Home() {
     }
 
     return (
-      <Button 
-      style={{backgroundColor:color}} 
-      className=" m-2" 
-      variant="contained"
-      onClick={() => setDisplayValue(prev => prev + label)}
+      <Button
+        key={botao} // Adiciona uma chave única para cada botão
+        style={{ backgroundColor: color }}
+        className="m-2"
+        variant="contained"
+        onClick={handleClick}
       >
         {label}
       </Button>
     );
   };
+
 
   for (let i = 0; i < 5; i++) {
     const listaDeBotao = [];
