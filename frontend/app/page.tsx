@@ -36,7 +36,7 @@ export default function Home() {
         case CalculadoraBotoes.igual:
           // Processa a equação e formata o resultado
           try {
-            const resultado = eval(displayValue); // Supondo que você use `eval` para cálculos
+            const resultado = eval(displayValue);
             setDisplayValue(parseFloat(resultado.toString()).toString()); // Converte o resultado para número e depois para string
           } catch (error) {
             console.error("Erro ao calcular:", error);
@@ -62,10 +62,10 @@ export default function Home() {
         label = "-";
         break;
       case CalculadoraBotoes.divisao:
-        label = "÷";
+        label = "/";
         break;
       case CalculadoraBotoes.multiplicasao:
-        label = "x";
+        label = "*";
         break;
       case CalculadoraBotoes.zero:
         label = "0";
